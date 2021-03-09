@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public class Bd {
 
     /*---------*/
-    /* Données */
-    /*---------*/
+ /* Données */
+ /*---------*/
 
-    /*----- Connexion -----*/
+ /*----- Connexion -----*/
     private static Connection cx = null;
 
     /*----- Données de connexion -----*/
@@ -26,9 +26,8 @@ public class Bd {
 
 
     /*----------*/
-    /* Méthodes */
-    /*----------*/
-
+ /* Méthodes */
+ /*----------*/
     /**
      * Crée la connexion avec la base de données.
      */
@@ -113,14 +112,14 @@ public class Bd {
             return null;
         }
     }
-
+    
     public static boolean VerifierMot(String mot) throws ClassNotFoundException, SQLException {
         if (Bd.cx == null) {
             Bd.connexion();
         }
-
+        
         boolean res = false;
-
+        
         String sql = "SELECT count(*) FROM Mot WHERE Texte = ?";
 
         /*----- Ouverture de l'espace de requête -----*/
@@ -129,56 +128,36 @@ public class Bd {
             st.setString(1, mot);
             try (ResultSet rs = st.executeQuery()) {
                 /*----- Lecture du contenu du ResultSet -----*/
-                if (rs.next()) {
-                    if (Integer.parseInt(rs.getString(1)) != 0) {
-                        res = true;
-                    } else {
-                        res = false;
-                    }
+                if (rs.next() ){
+                    if(Integer.parseInt(rs.getString(1))!=0)
+                {
+                    res=true;
+                }
+                else{
+                res=false;
+                }
                 }
             }
         } catch (SQLException ex) {
             throw new SQLException("Exception lireMots() : Problème SQL - " + ex.getMessage());
         }
 
-        return res;
+        return res; 
     }
 
-
-    public static int ajouterMot(String mot) throws ClassNotFoundException, SQLException {
-        if (Bd.cx == null) {
-            Bd.connexion();
-        }
-
-        String sql = "INSERT INTO `Mot`(`Texte`) VALUES (?)";
-
-        /*----- Ouverture de l'espace de requête -----*/
-        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
-            /*----- Exécution de la requête -----*/
-            st.setString(1, mot);
-            return st.executeUpdate();
-        } catch (SQLException ex) {
-            throw new SQLException("Exception ajouterMots() : Problème SQL - " + ex.getMessage());
-        }
-
-    }
-
-    /*----------------------------*/
-    /* Programme principal (test) */
-    /*----------------------------*/
+ /*----------------------------*/
+ /* Programme principal (test) */
+ /*----------------------------*/
     public static void main(String[] s) {
         try {
-            System.out.println(Bd.VerifierMot("a"));
-            System.out.println(ajouterMot("a"));
-            System.out.println(Bd.VerifierMot("a"));
+            System.out.println(Bd.VerifierMot("")); 
 //            ArrayList<String> l = Bd.LireMots("c");
 //            for (String msg : l) {
 //                System.out.println(msg);
-            //   }
+         //   }
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-}
-/*----- Fin de la classe Bd -----*/
+} /*----- Fin de la classe Bd -----*/
