@@ -63,10 +63,10 @@ public class Bd {
         String sql = "SELECT LibCitation FROM Auteur, Citation WHERE Auteur.IdAuteur=Citation.AutCitation AND Auteur.NomAuteur=?";
 
         /*----- Ouverture de l'espace de requête -----*/
-        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+        try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
             /*----- Exécution de la requête -----*/
             st.setString(1, nom_auteur);
-            try (ResultSet rs = st.executeQuery()) {
+            try ( ResultSet rs = st.executeQuery()) {
                 /*----- Lecture du contenu du ResultSet -----*/
                 while (rs.next()) {
                     liste.add(rs.getString(1));
@@ -93,10 +93,10 @@ public class Bd {
 
         if (mot_begin != null) {
             /*----- Ouverture de l'espace de requête -----*/
-            try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+            try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
                 /*----- Exécution de la requête -----*/
                 st.setString(1, mot_begin + "%");
-                try (ResultSet rs = st.executeQuery()) {
+                try ( ResultSet rs = st.executeQuery()) {
                     /*----- Lecture du contenu du ResultSet -----*/
                     while (rs.next()) {
                         liste.add(rs.getString(1));
@@ -112,52 +112,51 @@ public class Bd {
             return null;
         }
     }
-    
+
     public static boolean VerifierMot(String mot) throws ClassNotFoundException, SQLException {
         if (Bd.cx == null) {
             Bd.connexion();
         }
-        
+
         boolean res = false;
-        
+
         String sql = "SELECT count(*) FROM Mot WHERE Texte = ?";
 
         /*----- Ouverture de l'espace de requête -----*/
-        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+        try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
             /*----- Exécution de la requête -----*/
             st.setString(1, mot);
-            try (ResultSet rs = st.executeQuery()) {
+            try ( ResultSet rs = st.executeQuery()) {
                 /*----- Lecture du contenu du ResultSet -----*/
-                if (rs.next() ){
-                    if(Integer.parseInt(rs.getString(1))!=0)
-                {
-                    res=true;
-                }
-                else{
-                res=false;
-                }
+                if (rs.next()) {
+                    if (Integer.parseInt(rs.getString(1)) != 0) {
+                        res = true;
+                    } else {
+                        res = false;
+                    }
                 }
             }
         } catch (SQLException ex) {
             throw new SQLException("Exception lireMots() : Problème SQL - " + ex.getMessage());
         }
 
-        return res; 
+        return res;
     }
 
- /*----------------------------*/
+    /*----------------------------*/
  /* Programme principal (test) */
  /*----------------------------*/
     public static void main(String[] s) {
         try {
-            System.out.println(Bd.VerifierMot("")); 
+            System.out.println(Bd.VerifierMot("ab"));
 //            ArrayList<String> l = Bd.LireMots("c");
 //            for (String msg : l) {
 //                System.out.println(msg);
-         //   }
+            //   }
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-} /*----- Fin de la classe Bd -----*/
+}
+/*----- Fin de la classe Bd -----*/
