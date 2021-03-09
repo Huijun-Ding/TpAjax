@@ -5,7 +5,7 @@
  * de récupérer sous forme de texte le flux envoyé par le serveur.
  */
 function afficheXML ()
-	{
+	{    
 	// Objet XMLHttpRequest.
 	var xhr = new XMLHttpRequest();
 
