@@ -178,14 +178,16 @@ function processKey ()
                 if (myinput != "") {
                 suggestions = xhr.responseXML.getElementsByTagName("mot");
                 elt = document.getElementById("zoneaff");
-                if(suggestions!=null){
+                if(suggestions!=null&&suggestions.length!=0){
                 elt.style.display = "block";
                 elt.innerHTML = "";
                 for (i = 0; i < suggestions.length; i++) {
                     m = suggestions[i].firstChild.nodeValue;
                     elt.insertAdjacentHTML("beforeend", "<p>" + m + "</p>"); // "afterbegin" dans l'ordre inverse
                 }
-                }            
+                } else {
+                elt.style.display = "none";
+                }         
             } else {
                 elt.style.display = "none";
                 }
