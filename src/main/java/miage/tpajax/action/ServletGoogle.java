@@ -33,12 +33,8 @@ public class ServletGoogle extends HttpServlet {
             try {
                 /*----- Lecture de liste de mots dans la BD -----*/
                 ArrayList<String> mots = Bd.LireMots(mot_begin);
-                if (mots!=null){
                 for (String mot : mots) {
                     out.println("<mot><![CDATA[" + mot + "]]></mot>");
-                }}
-                else{
-                 out.println("<mot><![CDATA[]]></mot>");
                 }
             } catch (ClassNotFoundException | SQLException ex) {
                 out.println("<mot>Erreur - " + ex.getMessage() + "</mot>");

@@ -105,28 +105,29 @@ function processKey ()
 	// Objet XMLHttpRequest.
 	var xhr = new XMLHttpRequest();
 
-    var myinput = document.getElementById("saisie").value;
-    xhr.open("GET", "ServletGoogle?mot_begin=" + myinput);
+        var myinput = document.getElementById("saisie").value;
+        xhr.open("GET", "ServletGoogle?mot_begin=" + myinput);
 
-    xhr.onload = function ()
-    {
-        if (xhr.status === 200)
+        xhr.onload = function ()
         {
-            suggestions = xhr.responseXML.getElementsByTagName("mot");
-           
-            elt = document.getElementById("zoneaff");
-            if(suggestions!=null){
-            elt.style.display = "block";
-            elt.innerHTML = "";
-            for (i = 0; i < suggestions.length; i++) {
-                m = suggestions[i].firstChild.nodeValue;
-                elt.insertAdjacentHTML("beforeend", "<p>" + m + "</p>"); // "afterbegin" dans l'ordre inverse
+            if (xhr.status === 200)
+            {
+                if (myinput != "") {
+                suggestions = xhr.responseXML.getElementsByTagName("mot");
+                elt = document.getElementById("zoneaff");
+                if(suggestions!=null){
+                elt.style.display = "block";
+                elt.innerHTML = "";
+                for (i = 0; i < suggestions.length; i++) {
+                    m = suggestions[i].firstChild.nodeValue;
+                    elt.insertAdjacentHTML("beforeend", "<p>" + m + "</p>"); // "afterbegin" dans l'ordre inverse
+                }
+                }            
+            } else {
+                elt.style.display = "none";
+                }
             }
-        }}
-    else{
-         elt.style.display = "none";
-    }
-    };
+        };
 	// Envoie de la requête.
 	xhr.send();
         
