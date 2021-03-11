@@ -96,14 +96,15 @@ function l_citations()
     xhr.send();
 }
 
-
+/**
+ * @author zss
+ * Cette méthode "Ajax" permet de verifier si un mot saisi existe déjà dans BD
+ */
 function validation() {
     // Objet XMLHttpRequest.
     var xhr = new XMLHttpRequest();
-//    var zone = document.getElementById("zoneV").value;
     var zone = document.getElementById("zoneV").value;
-
-    xhr.open("GET", "ServletValidation?zone=" + zone);
+    xhr.open("GET", "ServletValidation?zone=" + zone + "&method=valider");
 
     xhr.onload = function ()
     {
@@ -117,12 +118,46 @@ function validation() {
             if (suggestions != null) {
                 m = suggestions[0].firstChild.nodeValue;
                 elt.insertAdjacentHTML("beforeend", m);
+
+                if (m === "N'existe pas!"){
+                    document.getElementById("bt_ajouter").disabled = false;
+                }else if (m === "Existe!" || m == null){
+                    document.getElementById("bt_ajouter").disabled = 'disabled';
+                }
             }
         }
     };
     // Envoie de la requête.
     xhr.send();
 
+}
+
+
+/**
+ * @author zss
+ * Cette méthode "Ajax" permet d'ajouter un mot dans BD
+ */
+function ajouter(){
+    // Objet XMLHttpRequest.
+    var xhr = new XMLHttpRequest();
+    var zone = document.getElementById("zoneV").value;
+    xhr.open("GET", "ServletValidation?zone=" + zone + "&method=ajouter");
+
+    xhr.onload = function ()
+    {
+        if (xhr.status === 200)
+        {
+            res = xhr.responseXML.getElementsByTagName("insertion");
+            elt = document.getElementById("bt_ajouter");
+            elt.innerHTML = "";
+            if (res != null) {
+                m = res[0].firstChild.nodeValue;
+                elt.insertAdjacentHTML("afterend", m);
+            }
+        }
+    };
+    // Envoie de la requête.
+    xhr.send();
 }
 
 /**
@@ -132,9 +167,9 @@ function processKey()
 {
     // Objet XMLHttpRequest.
     var xhr = new XMLHttpRequest();
-
     var myinput = document.getElementById("saisie").value;
     xhr.open("GET", "ServletGoogle?mot_begin=" + myinput);
+    elt.style.display = "none";
 
     xhr.onload = function ()
     {
@@ -144,16 +179,19 @@ function processKey()
 
             elt = document.getElementById("zoneaff");
             if (suggestions != null) {
-                elt.style.display = "block";
+
                 elt.innerHTML = "";
                 for (i = 0; i < suggestions.length; i++) {
                     m = suggestions[i].firstChild.nodeValue;
-                    elt.insertAdjacentHTML("beforeend", "<p>" + m + "</p>"); // "afterbegin" dans l'ordre inverse
+                    if (m.length!==0){
+                        elt.style.display = "block";
+                        elt.insertAdjacentHTML("beforeend", "<p>" + m + "</p>"); // "afterbegin" dans l'ordre inverse
+                    }
                 }
             }
-        } else {
+        } /*else {
             elt.style.display = "none";
-        }
+        }*/
     };
     // Envoie de la requête.
     xhr.send();
@@ -203,5 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("saisie").addEventListener("keyup", processKey);
 //    document.getElementById("zoneV").addEventListener("keyup", validation);
     document.getElementById("zoneV").addEventListener("keyup", validation);
+    document.getElementById("bt_ajouter").addEventListener("click", ajouter);
 
 });

@@ -29,19 +29,41 @@ public class ServletValidation extends HttpServlet {
 
             /*----- Récupération des paramètres -----*/
             String mot = request.getParameter("zone");
-            System.out.println(mot);
-            try {
-                /*----- Lecture de liste de mots dans la BD -----*/
-                Boolean existe = Bd.VerifierMot(mot);
-                System.out.println(existe);
-                if (existe) {
-                    out.println("<existe>Existe!</existe>");
-                } else {
-                    out.println("<existe>N'existe pas!</existe>");
+            String method = request.getParameter("method");
+            if (method.equals("valider")){
+                if (!mot.equals("")){
+                    try {
+                        /*----- Lecture de liste de mots dans la BD -----*/
+                        Boolean existe = Bd.VerifierMot(mot);
+                        System.out.println(existe);
+                        if (existe) {
+                            out.println("<existe>Existe!</existe>");
+                        } else {
+                            out.println("<existe>N'existe pas!</existe>");
+                        }
+                    } catch (ClassNotFoundException | SQLException ex) {
+                        out.println("<existe>Erreur - " + ex.getMessage() + "</existe>");
+                    }
+                }else {
+                    out.println("<existe></existe>");
                 }
-            } catch (ClassNotFoundException | SQLException ex) {
-                out.println("<existe>Erreur - " + ex.getMessage() + "</existe>");
+
+            }else if (method.equals("ajouter")){
+                if (!mot.equals("")){
+                    try {
+                        /*----- appeler la fonction d'insertion de mot -----*/
+                        int nb = Bd.ajouterMot(mot);
+                        if (nb == 1) {
+                            out.println("<insertion>Insertion réussie!</insertion>");
+                        } else {
+                            out.println("<insertion>Insertion échouée!</insertion>");
+                        }
+                    } catch (ClassNotFoundException | SQLException ex) {
+                        out.println("<insertion>Erreur - " + ex.getMessage() + "</insertion>");
+                    }
+                }
             }
+
         }
     }
 

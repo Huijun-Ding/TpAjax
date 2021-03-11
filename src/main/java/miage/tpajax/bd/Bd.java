@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public class Bd {
 
     /*---------*/
- /* Données */
- /*---------*/
+    /* Données */
+    /*---------*/
 
- /*----- Connexion -----*/
+    /*----- Connexion -----*/
     private static Connection cx = null;
 
     /*----- Données de connexion -----*/
@@ -26,8 +26,9 @@ public class Bd {
 
 
     /*----------*/
- /* Méthodes */
- /*----------*/
+    /* Méthodes */
+    /*----------*/
+
     /**
      * Crée la connexion avec la base de données.
      */
@@ -63,10 +64,10 @@ public class Bd {
         String sql = "SELECT LibCitation FROM Auteur, Citation WHERE Auteur.IdAuteur=Citation.AutCitation AND Auteur.NomAuteur=?";
 
         /*----- Ouverture de l'espace de requête -----*/
-        try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
             /*----- Exécution de la requête -----*/
             st.setString(1, nom_auteur);
-            try ( ResultSet rs = st.executeQuery()) {
+            try (ResultSet rs = st.executeQuery()) {
                 /*----- Lecture du contenu du ResultSet -----*/
                 while (rs.next()) {
                     liste.add(rs.getString(1));
@@ -93,10 +94,10 @@ public class Bd {
 
         if (mot_begin != null) {
             /*----- Ouverture de l'espace de requête -----*/
-            try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+            try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
                 /*----- Exécution de la requête -----*/
                 st.setString(1, mot_begin + "%");
-                try ( ResultSet rs = st.executeQuery()) {
+                try (ResultSet rs = st.executeQuery()) {
                     /*----- Lecture du contenu du ResultSet -----*/
                     while (rs.next()) {
                         liste.add(rs.getString(1));
@@ -123,10 +124,10 @@ public class Bd {
         String sql = "SELECT count(*) FROM Mot WHERE Texte = ?";
 
         /*----- Ouverture de l'espace de requête -----*/
-        try ( PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
             /*----- Exécution de la requête -----*/
             st.setString(1, mot);
-            try ( ResultSet rs = st.executeQuery()) {
+            try (ResultSet rs = st.executeQuery()) {
                 /*----- Lecture du contenu du ResultSet -----*/
                 if (rs.next()) {
                     if (Integer.parseInt(rs.getString(1)) != 0) {
@@ -143,12 +144,33 @@ public class Bd {
         return res;
     }
 
+
+    public static int ajouterMot(String mot) throws ClassNotFoundException, SQLException {
+        if (Bd.cx == null) {
+            Bd.connexion();
+        }
+
+        String sql = "INSERT INTO `Mot`(`Texte`) VALUES (?)";
+
+        /*----- Ouverture de l'espace de requête -----*/
+        try (PreparedStatement st = Bd.cx.prepareStatement(sql)) {
+            /*----- Exécution de la requête -----*/
+            st.setString(1, mot);
+            return st.executeUpdate();
+        } catch (SQLException ex) {
+            throw new SQLException("Exception ajouterMots() : Problème SQL - " + ex.getMessage());
+        }
+
+    }
+
     /*----------------------------*/
- /* Programme principal (test) */
- /*----------------------------*/
+    /* Programme principal (test) */
+    /*----------------------------*/
     public static void main(String[] s) {
         try {
-            System.out.println(Bd.VerifierMot("ab"));
+            System.out.println(Bd.VerifierMot("a"));
+            System.out.println(ajouterMot("a"));
+            System.out.println(Bd.VerifierMot("a"));
 //            ArrayList<String> l = Bd.LireMots("c");
 //            for (String msg : l) {
 //                System.out.println(msg);
